@@ -13,12 +13,8 @@ const Company = require("../models/company");
 
 router.get("/", authRequired, async function(req, res, next) {
   try {
-    console.log('got here');
-    console.log(req.query);
-    
     const jobs = await Job.findAll(req.query, req.username);
     const companies = await Company.findAll(req.query);
-    // console.log(res.json({jobs, companies}));
     
     return res.json({jobs, companies});
   }

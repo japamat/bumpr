@@ -1,9 +1,6 @@
 const db = require("../db");
 
-const BCRYPT_WORK_FACTOR = 10;
-
-
-/** Related functions for users. */
+/** Related functions for messages. */
 
 class Message {
   /** Add a new message. Returns new user data. */
@@ -13,7 +10,7 @@ class Message {
       `INSERT INTO messages 
             (message, username) 
           VALUES ($1, $2) 
-          RETURNING message, timestamp, username`,
+          RETURNING message, timestamp, username, id`,
       [data.message, data.username]);
 
     return result.rows[0];
@@ -25,9 +22,38 @@ class Message {
     const result = await db.query(
       `DELETE FROM messages WHERE id = $1`, [data]
     );
+    return result;
+  }
+
+  /** Update message */
+
+  static async edit(id, message) {
+    const result = await db.query(
+      `UPDATE messages SET message = $1 WHERE id = $2 RETURNING message, id, timestamp, username`, [message, id]
+    );
     return result.rows[0];
   }
-}
 
+  /** Find specific message */
+
+  static async findOne(id) {
+    const result = await db.query(
+      `SELECT * FROM MESSAGES WHERE id = $1`, [id]
+    );
+    return result.rows[0];
+  }
+
+  /** Get new messages */
+
+  static async findNew(offset, limit) {
+    // set defaults if params not passed
+    if (isNaN(+offset)) offset = 0;
+    if (isNaN(+limit)) limit = 20;
+    const result = await db.query(
+      `SELECT * FROM MESSAGES ORDER BY timestamp DESC LIMIT $1 OFFSET $2`, [limit, offset]
+    );
+    return result.rows;
+  }
+}
 
 module.exports = Message;

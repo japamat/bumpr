@@ -3,6 +3,7 @@ exports.companyUpdateSchema = require("./companyUpdate");
 exports.jobNewSchema = require("./jobNew");
 exports.jobUpdateSchema = require("./jobUpdate");
 exports.addMessageSchema = require("./addMessage");
+exports.updateMessageSchema = require("./updateMessage");
 exports.userAuthSchema = require("./userAuth");
 exports.userNewSchema = require("./userNew");
 exports.userUpdateSchema = require("./userUpdate");

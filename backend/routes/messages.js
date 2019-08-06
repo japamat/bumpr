@@ -9,38 +9,36 @@ const Message = require("../models/messages");
 const { validate } = require("jsonschema");
 const jwt = require("jsonwebtoken");
 
-const { addMessageSchema } = require("../schemas");
+const { addMessageSchema, updateMessageSchema } = require("../schemas");
 
 const createToken = require("../helpers/createToken");
 
 
 /** GET / => {users: [user, ...]} */
 
-router.get("/", async function(req, res, next) {
+router.get("/new", async function(req, res, next) {
   try {
-    const users = await User.findAll();
-    return res.json({ users });
-  }
-
-  catch (err) {
+    let { offset, limit } = req.query;
+    const messages = await Message.findNew(offset, limit);
+    return res.json({ messages });
+  } catch (err) {
     return next(err);
   }
 });
 
-/** GET /[username] => {user: user} */
+/** GET /[message] => {message: message} */
+// works from jobly to warbler
 
-router.get("/:username", async function(req, res, next) {
+router.get("/:id", async function(req, res, next) {
   try {
-    const user = await User.findOne(req.params.username);
-    return res.json({ user });
-  }
-
-  catch (err) {
+    const message = await Message.findOne(req.params.id);
+    return res.json({ message });
+  } catch (err) {
     return next(err);
   }
 });
 
-/** POST / {userdata}  => {token: token} */
+/** POST / {message data}  => {message: message} */
 // works from jobly to warbler
 
 router.post("/", authRequired, async function(req, res, next) {
@@ -63,25 +61,24 @@ router.post("/", authRequired, async function(req, res, next) {
   }
 });
 
-/** PATCH /[handle] {userData} => {user: updatedUser} */
+/** PATCH /[username]/[message id] {message} => {message: updatedMessage} */
 // works from jobly to warbler
 
-router.patch("/:username", ensureCorrectUser, async function(req, res, next) {
+router.patch("/:username/:id", authRequired, ensureCorrectUser, async function(req, res, next) {
   try {
     if ("username" in req.body || "is_admin" in req.body) {
-      return next({status: 400, message: "Not allowed" });
+      return next({ status: 400, message: "Not allowed" });
     }
 
-    const validation = validate(req.body, userUpdateSchema);
+    const validation = validate(req.body, updateMessageSchema);
     if (!validation.valid) {
       return next({
         status:400,
         message: validation.errors.map(e => e.stack)
       });
     }
-
-    const user = await User.update(req.params.username, req.body);
-    return res.json({user});
+    const message = await Message.edit(req.params.id, req.body.message);
+    return res.json({ message });
   }
 
   catch (err) {
@@ -89,7 +86,8 @@ router.patch("/:username", ensureCorrectUser, async function(req, res, next) {
   }
 });
 
-/** DELETE /[handle]  =>  {message: "User deleted"}  */
+/** DELETE /[username]/[message id]  =>  {message: "Message deleted"}  */
+// works from jobly to warbler
 
 router.delete("/:username/:id", authRequired, ensureCorrectUser, async function(req, res, next) {
   try {

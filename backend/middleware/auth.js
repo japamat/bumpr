@@ -72,16 +72,9 @@ function adminRequired(req, res, next) {
 
 function ensureCorrectUser(req, res, next) {
   try {
-    const tokenStr = req.body._token || req.query._token;
-    
-    let token = jwt.verify(tokenStr, SECRET);
-    console.log('got to auth middleware, ensure correct user. req: ', req.username === token.username);
-
-
     if (req.username === req.params.username) {
       return next();
     }
-
     // throw an error, so we catch it in our catch, below
     throw new Error();
   }
