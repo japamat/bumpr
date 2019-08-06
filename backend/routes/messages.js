@@ -6,6 +6,8 @@ const router = express.Router();
 const { ensureCorrectUser, authRequired } = require("../middleware/auth");
 
 const Message = require("../models/messages");
+const Like = require("../models/like");
+const Comment = require("../models/comment");
 const { validate } = require("jsonschema");
 const jwt = require("jsonwebtoken");
 
@@ -38,7 +40,67 @@ router.get("/:id", async function(req, res, next) {
   }
 });
 
-/** POST / {message data}  => {message: message} */
+// like a given message
+
+router.post("/:id/like", authRequired, async function(req, res, next) {
+  try {
+    const like = await Like.likeMessage(req.params.id, req.username);
+    return res.json({ like });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// unlike a given message
+
+router.delete("/:id/unlike", authRequired, async function(req, res, next) {
+  try {
+    await Like.unlikeMessage(req.params.id, req.username);
+    return res.json({ message: `you no longer like this message` });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// comment on a given message
+
+router.post("/:id/comment", authRequired, async function(req, res, next) {
+  try {
+    const comment = await Comment.addComment(req.params.id, req.username, req.body.comment);
+    return res.json({ comment });
+  } catch (err) {
+    return next(err);
+  }
+});
+
+// Delete comment on a given message
+
+router.delete(
+  "/:id/comment", authRequired, async function(req, res, next) {
+    try {
+      const commenter = await Comment.getUsername(req.body.comment_id);
+      if (commenter !== req.username) return next();
+      await Comment.deleteComment(req.body.comment_id, req.params.id);
+      return res.json({ message: `Your comment has been deleted` });
+    } catch (err) {
+      return next(err);
+    }
+});
+
+// Edit comment on a given message
+
+router.patch(
+  "/:id/comment", authRequired, async function(req, res, next) {
+    try {
+      const commenter = await Comment.getUsername(req.body.comment_id);
+      if (commenter !== req.username) return next();
+      let comment = await Comment.editComment(req.body.comment_id, req.body.comment);
+      return res.json({ comment });
+    } catch (err) {
+      return next(err);
+    }
+});
+
 // works from jobly to warbler
 
 router.post("/", authRequired, async function(req, res, next) {

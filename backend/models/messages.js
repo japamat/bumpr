@@ -37,10 +37,22 @@ class Message {
   /** Find specific message */
 
   static async findOne(id) {
-    const result = await db.query(
-      `SELECT * FROM MESSAGES WHERE id = $1`, [id]
+    const messageRes = await db.query(
+      `SELECT * FROM messages WHERE id = $1`, [id]
     );
-    return result.rows[0];
+    let message = messageRes.rows[0];
+    
+    const messageLikesRes = await db.query(
+      `SELECT * FROM likes WHERE message_id = $1`, [id]
+    );
+    
+    const messageCommentsRes = await db.query(
+      `SELECT * FROM comments WHERE message_id = $1`, [id]
+    );
+    
+    message.likes = messageLikesRes.rows;
+    message.comments = messageCommentsRes.rows;
+    return message;
   }
 
   /** Get new messages */

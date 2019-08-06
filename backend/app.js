@@ -15,10 +15,16 @@ app.use(morgan("tiny"));
 
 const usersRoutes = require("./routes/users");
 const messagesRoutes = require("./routes/messages");
+const followersRoutes = require("./routes/followers");
+const followingRoutes = require("./routes/following");
+const followRoutes = require("./routes/follow");
 const authRoutes = require("./routes/auth");
 
 app.use("/users", usersRoutes);
 app.use("/messages", messagesRoutes);
+app.use("/follow", followRoutes);
+app.use("/followers", followersRoutes);
+app.use("/following", followingRoutes);
 app.use("/", authRoutes);
 
 /** 404 handler */
