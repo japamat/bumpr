@@ -1,0 +1,79 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Update User Schema",
+  "properties": {
+    "username": {
+      "$id": "#/properties/username",
+      "type": "string",
+      "title": "The Username Schema",
+      "default": "",
+      "examples": [
+        "japamat"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "password": {
+      "$id": "#/properties/password",
+      "type": "string",
+      "title": "The Password Schema",
+      "default": "",
+      "examples": [
+        "password"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "image_url": {
+      "$id": "#/properties/image_url",
+      "type": "string",
+      "title": "The Image_url Schema",
+      "default": "",
+      "examples": [
+        "https://cdn5.vectorstock.com/i/thumb-large/66/14/default-avatar-photo-placeholder-profile-picture-vector-21806614.jpg"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "bio": {
+      "$id": "#/properties/bio",
+      "type": "string",
+      "title": "The Bio Schema",
+      "default": "",
+      "examples": [
+        "my name is Jason, I built this thing!"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "email": {
+      "$id": "#/properties/email",
+      "type": "string",
+      "title": "The Email Schema",
+      "default": "",
+      "examples": [
+        "jpmatthias90@gmail.com"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "header_image_url": {
+      "$id": "#/properties/header_image_url",
+      "type": "string",
+      "title": "The Header_image_url Schema",
+      "default": "",
+      "examples": [
+        "https://cdn5.vectorstock.com/i/thumb-large/66/14/default-avatar-photo-placeholder-profile-picture-vector-21806614.jpg"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "location": {
+      "$id": "#/properties/location",
+      "type": "string",
+      "title": "The Location Schema",
+      "default": "",
+      "examples": [
+        "San Francisco, CA"
+      ],
+      "pattern": "^(.*)$"
+    }
+  }
+}

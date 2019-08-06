@@ -1,0 +1,23 @@
+{
+    "definitions": {},
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://example.com/root.json",
+    "type": "object",
+    "title": "The Root Schema",
+    "required": [
+      "message"
+    ],
+    "properties": {
+      "message": {
+        "$id": "#/properties/message",
+        "type": "string",
+        "maxLength": 280,
+        "title": "The Message Schema",
+        "default": "",
+        "examples": [
+          "Sample message submitted!"
+        ],
+        "pattern": "^(.*)$"
+      }
+    }
+  }
