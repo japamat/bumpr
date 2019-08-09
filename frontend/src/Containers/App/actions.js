@@ -5,9 +5,9 @@ export const loginUser = payload => ({
   payload,
 });
 
-export const loginUserSuccess = payload => ({
+export const loginUserSuccess = username => ({
   type: LOGIN_USER_SUCCESS,
-  payload,
+  username,
 });
 
 export const loginUserError = error => ({

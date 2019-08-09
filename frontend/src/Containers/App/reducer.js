@@ -25,11 +25,9 @@ const appReducer = (state = initialState, action) =>
       case LOGIN_USER:
         draft.loading = true;
         draft.error = false;
-        draft.userData.repositories = false;
         break;
 
       case LOGIN_USER_SUCCESS:
-        draft.userData = action.userData;
         draft.loading = false;
         draft.currentUser = action.username;
         break;

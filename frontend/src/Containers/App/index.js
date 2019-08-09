@@ -8,7 +8,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, BrowserRouter } from 'react-router-dom';
 import { Redirect } from 'react-router';
 
 import HomePage from '../HomePage/Loadable';
@@ -17,6 +17,8 @@ import Header from '../../Components/Header';
 import Footer from '../../Components/Footer';
 
 import GlobalStyle from '../../global-styles';
+import LoginPage from '../LoginPage';
+import history from '../../utils/history';
 
 const AppWrapper = styled.div`
   max-width: calc(768px + 16px * 2);
@@ -44,6 +46,7 @@ export default function App() {
           />
         <Switch>
           <Route exact path="/home" component={HomePage} />
+          <Route exact path="/login" component={LoginPage} />
           <Redirect to="/home" />
           <Route path="" component={NotFoundPage} />
         </Switch>
