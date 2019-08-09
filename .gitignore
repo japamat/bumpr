@@ -2,22 +2,34 @@
 
 # dependencies
 /backend/node_modules
-/warbler/node_modules
+/frontend/node_modules
 /.pnp
 .pnp.js
 
 # testing
-/coverage
+/backend/coverage
+/frontend/coverage
 
 # production
-/build
+/backend/build
+/frontend/build
 
 # misc
-.DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+/backend/.DS_Store
+/backend/.env.local
+/backend/.env.development.local
+/backend/.env.test.local
+/backend/.env.production.local
+/frontend/.DS_Store
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
+/frontend/npm-debug.log
+/frontend/.idea
+
+/frontened/stats.json
 
 npm-debug.log*
 yarn-debug.log*
