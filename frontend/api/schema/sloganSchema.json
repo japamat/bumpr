@@ -1,0 +1,26 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": ["text"],
+  "properties": {
+    "id": {
+      "$id": "#/properties/id",
+      "type": "string",
+      "title": "The Id Schema",
+      "default": "",
+      "examples": ["daeb73ab-9c21-44a1-b25b-bdc8eaab5f71"],
+      "pattern": "^(.*)$"
+    },
+    "text": {
+      "$id": "#/properties/text",
+      "type": "string",
+      "title": "The Text Schema",
+      "default": "",
+      "examples": ["transition synergistic schemas"],
+      "pattern": "^(.*)$"
+    }
+  }
+}
