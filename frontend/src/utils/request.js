@@ -33,6 +33,16 @@ class Request {
     return res.token;
   }
 
+  static async loadUser(username) {
+    let res = await this.request(`users/${username}`);
+    return res.user;
+  }
+
+  static async getLoggedInUser() {
+    let res = await this.request(`login`);
+    return res.user;
+  }
+
   static async getCompanies() {
     let res = await this.request(`companies`);
     return res.companies;

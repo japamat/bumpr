@@ -9,6 +9,7 @@
  * export const YOUR_ACTION_CONSTANT = 'yourproject/YourContainer/YOUR_ACTION_CONSTANT';
  */
 
-export const LOGIN_USER = `frontend/App/LOAD_USER`;
-export const LOGIN_USER_SUCCESS = `frontend/App/LOAD_USER_SUCCESS`;
-export const LOGIN_USER_ERROR = `frontend/App/LOAD_USER_ERROR`;
+export const LOGIN_USER = `frontend/App/LOGIN_USER`;
+export const LOGIN_PREVIOUS_USER = `frontend/App/LOGIN_PREVIOUS_USER`;
+export const LOGIN_USER_SUCCESS = `frontend/App/LOGIN_USER_SUCCESS`;
+export const LOGIN_USER_ERROR = `frontend/App/LOGIN_USER_ERROR`;

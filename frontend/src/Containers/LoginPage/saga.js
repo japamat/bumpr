@@ -1,5 +1,5 @@
 import { call, put, select, takeLatest, all } from 'redux-saga/effects';
-import { LOGIN_USER, LOGIN_USER_SUCCESS, LOGIN_USER_ERROR } from '../App/constants';
+import { LOGIN_USER, LOGIN_USER_SUCCESS, LOGIN_USER_ERROR, LOGIN_PREVIOUS_USER } from '../App/constants';
 import { setToken, getUsernameFromToken } from '../../utils/token';
 import Request from '../../utils/request';
 import history from '../../utils/history';
@@ -29,6 +29,18 @@ export function* loginUserWorker(action) {
   }
 }
 
+export function* getLoggedInUserWorker(action) {
+  try {
+    console.log(`hit the loginsaga worker`);
+    
+    const username = yield call([Request, Request.getLoggedInUser], action.token);
+    yield put(loginUserSuccess(username));
+  } catch (error) {
+    console.log('things broke');
+    
+  }
+}
+
 
 /**
  * DEFAULT SAGA EXPORT
@@ -36,4 +48,5 @@ export function* loginUserWorker(action) {
 
 export const loginSagas = [
     takeLatest(LOGIN_USER, loginUserWorker),
+    takeLatest(LOGIN_PREVIOUS_USER, getLoggedInUserWorker),
   ]

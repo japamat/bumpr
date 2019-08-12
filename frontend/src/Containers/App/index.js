@@ -6,11 +6,15 @@
  * contain code that should be seen on all pages. (e.g. navigation bar)
  */
 
-import React from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Switch, Route, BrowserRouter } from 'react-router-dom';
 import { Redirect } from 'react-router';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
+
+import { loginPreviousUser } from '../App/actions';
 import HomePage from '../HomePage/Loadable';
 import NotFoundPage from '../NotFoundPage/Loadable';
 import Header from '../../Components/Header';
@@ -19,6 +23,8 @@ import Footer from '../../Components/Footer';
 import GlobalStyle from '../../global-styles';
 import LoginPage from '../LoginPage';
 import history from '../../utils/history';
+import { compose } from 'redux';
+import { makeSelectCurrentUser } from './selectors';
 
 const AppWrapper = styled.div`
   max-width: calc(768px + 16px * 2);
@@ -35,24 +41,49 @@ const BodyWrapper = styled.div`
   min-height: 100vh;
 `;
 
-export default function App() {
-  return (
-    <BodyWrapper>
-      <Header />
-      <AppWrapper>
-          <meta
-            name="bumpr - give things a bump"
-            content="A project by Jason Matthias"
-          />
-        <Switch>
-          <Route exact path="/home" component={HomePage} />
-          <Route exact path="/login" component={LoginPage} />
-          <Redirect to="/home" />
-          <Route path="" component={NotFoundPage} />
-        </Switch>
-        <Footer />
-        <GlobalStyle />
-      </AppWrapper>
-    </BodyWrapper>
-  );
+export class App extends Component {
+  componentDidMount() {
+    console.log('mounted!');
+    this.props.onLoginUser();
+    
+  }
+
+  render() {
+    return (
+      <BodyWrapper>
+        <Header />
+        <AppWrapper>
+            <meta
+              name="bumpr - give things a bump"
+              content="A project by Jason Matthias"
+            />
+          <Switch>
+            <Route exact path="/home" component={HomePage} />
+            <Route exact path="/login" component={LoginPage} />
+            <Redirect to="/home" />
+            <Route path="" component={NotFoundPage} />
+          </Switch>
+          <Footer />
+          <GlobalStyle />
+        </AppWrapper>
+      </BodyWrapper>
+    );
+  }
 }
+
+const mapStateToProps = createStructuredSelector({
+  username: makeSelectCurrentUser(),
+});
+
+export const mapDispatchToProps = dispatch => {
+  return {
+    onLoginUser: token => dispatch(loginPreviousUser())
+  }
+};
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
+
+export default compose(withConnect)(App);
