@@ -35,6 +35,7 @@ class User {
     throw invalidPass;
   }
 
+
   /** Register user with data. Returns new user data. */
 
   static async register(data) {
@@ -88,6 +89,8 @@ class User {
   /** Given a username, return data about user. */
 
   static async findOne(username) {
+    console.log('in the user model');
+    
     const userRes = await db.query(
       `SELECT username, bio, image_url, header_image_url, location 
             FROM users 
@@ -110,21 +113,21 @@ class User {
       [username]);
     
     const userFollowsRes = await db.query(
-      `SELECT f.followee
+      `SELECT f.followee AS username, u.bio, u.image_url, u.header_image_url, u.location
            FROM follows AS f
              JOIN users AS u ON u.username = f.follower
            WHERE u.username = $1`,
       [username]);
     
     const userFollowersRes = await db.query(
-      `SELECT f.follower
+      `SELECT f.follower AS username, u.bio, u.image_url, u.header_image_url, u.location
            FROM follows AS f
              JOIN users AS u ON u.username = f.followee
            WHERE u.username = $1`,
       [username]);
 
     user.messages = userMessagesRes.rows;
-    user.follows = userFollowsRes.rows;
+    user.following = userFollowsRes.rows;
     user.followers = userFollowersRes.rows;
     return user;
   }
