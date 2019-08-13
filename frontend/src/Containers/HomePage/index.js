@@ -10,35 +10,47 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 
-import { makeSelectCurrentUserData } from '../HomePage/selectors';
+import { makeSelectCurrentUserData, makeSelectHomeFeedOffset } from '../HomePage/selectors';
 import { makeSelectCurrentUser } from '../App/selectors';
 import { loadUser, loadUserError } from '../HomePage/actions';
 
 
 export class HomePage extends Component {
   async componentDidMount() {
+    const { username, feedOffset } = this.props;
+    console.log(`in homepage comp: `, this.props);
+    
     try {
-      this.props.onLoadUser( this.props.username );
+      this.props.onLoadUser(username, feedOffset);
     } catch (error) {
 
     }
   }
 
   render() {
-    const { following } = this.props.currentUserData;
-    console.log(following);
+    const { following, followers, feed } = this.props.currentUserData;
     
     return (
       <div>
         <h1>
           { this.props.username }
         </h1>
-        <h1>
-          FOLLOWING:
-        </h1>
+        <h3>
+          FOLLOWING: { following ? following.length : 0 }
+        </h3>
+        <h3>
+          FOLLOWERS: { followers ? followers.length : 0 }
+        </h3>
+        <h3>
+          FEED
+        </h3>
         { this.props.currentUserData ? (
-          following.map(user => (
-            <h5>{user.username}</h5>
+          feed.map(message => (
+            <div>
+              <h5>{message.username}</h5>
+              <div>{message.message}</div>
+              <div><small>{message.timestamp}</small></div>
+            </div>
           ))
         ) : null }
   
@@ -49,12 +61,13 @@ export class HomePage extends Component {
 }
 const mapStateToProps = createStructuredSelector({
   username: makeSelectCurrentUser(),
+  feedOffset: makeSelectHomeFeedOffset(),
   currentUserData: makeSelectCurrentUserData(),
 });
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onLoadUser: username => dispatch(loadUser(username)),
+    onLoadUser: (username, feedOffset) => dispatch(loadUser(username, feedOffset)),
     onLoadError: error => dispatch(loadUserError(error)),
   };
 }

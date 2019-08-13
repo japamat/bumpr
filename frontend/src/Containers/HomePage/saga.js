@@ -16,7 +16,11 @@ import {
 
 export function* loadUserWorker(action) {
   try {
-    const userData = yield call([Request, Request.loadUser], action.username);
+    const userData = yield call(
+      [Request, Request.loadUser],
+      action.username,
+      action.feedOffset
+    );
     yield put(loadUserSuccess(userData));
   } catch (error) {
     yield put(loadUserError(error));

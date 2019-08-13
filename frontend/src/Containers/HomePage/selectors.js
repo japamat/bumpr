@@ -17,6 +17,11 @@ const makeSelectHomeLoadingUser = () =>
     homeState => homeState.loadingUser,
   );
 
+const makeSelectHomeFeedOffset = () =>
+  createSelector(
+    selectHome,
+    homeState => homeState.feedOffset,
+  );
 
 const makeSelectHomeErrorUser = () =>
   createSelector(
@@ -28,4 +33,5 @@ export {
   makeSelectCurrentUserData,
   makeSelectHomeLoadingUser,
   makeSelectHomeErrorUser,
+  makeSelectHomeFeedOffset,
 };
