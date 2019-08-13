@@ -10,7 +10,6 @@ export const initialState = {
   loadingUser: false,
   errorUser: false,
   userData: false,
-  feedOffset: 0,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -25,7 +24,6 @@ const appReducer = (state = initialState, action) =>
       case LOAD_USER_SUCCESS:
         draft.loadingUser = false;
         draft.userData = action.userData;
-        draft.feedOffset = state.feedOffset + 50;
         break;
 
       case LOAD_USER_ERROR:
