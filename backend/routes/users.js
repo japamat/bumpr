@@ -30,9 +30,9 @@ router.get("/", async function(req, res, next) {
 
 router.get("/home", authRequired, async function(req, res, next) {
   try {
-    console.log(`got to route users/home`);
+    console.log(`in the home route`);
+    
     const user = await User.getFeed(req.username, req.query.offset);
-    console.log(user);
     return res.json({ user });
   } catch (err) {
     return next(err);
@@ -43,11 +43,9 @@ router.get("/home", authRequired, async function(req, res, next) {
 
 router.get("/:username", async function(req, res, next) {
   try {
-    const user = await User.findOne(req.params.username);
+    const user = await User.findOne(req.params.username, req.query.offset);
     return res.json({ user });
-  }
-
-  catch (err) {
+  } catch (err) {
     return next(err);
   }
 });

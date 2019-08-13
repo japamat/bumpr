@@ -106,7 +106,9 @@ class User {
 
   /** Given a username, return data about user. */
 
-  static async findOne(username) {
+  static async findOne(username, offset) {
+    console.log(`in user model: ${username}`);
+    
     const userRes = await db.query(
       `SELECT username, bio, image_url, header_image_url, location 
             FROM users 
@@ -122,11 +124,12 @@ class User {
     }
 
     const userMessagesRes = await db.query(
-      `SELECT m.id, m.message, u.username, m.timestamp
+      `SELECT m.id, m.message, u.username, m.timestamp, m.rebump
            FROM messages AS m
              JOIN users AS u ON u.username = m.username
-           WHERE m.username = $1`,
-      [username]);
+           WHERE m.username = $1
+           LIMIT 50 OFFSET $2`,
+      [username, offset]);
     
     const userFollowsRes = await db.query(
       `SELECT f.followee AS username, u.bio, u.image_url, u.header_image_url, u.location

@@ -72,4 +72,32 @@ client.connect();
 // });
 // console.log('finished inserting into follows');
 
+// add followers to japamat in db
+
+// (async () => {
+//   let followers = userJSON.filter(() => Math.random() > .86);
+//   followers.forEach(async follower => (
+//     await client.query(`INSERT INTO follows (followee, follower) VALUES ($1, $2)`, [`japamat`, follower.username])
+//   ));
+// })();
+// console.log('finished inserting into follows');
+
+// add rebumps into db
+
+(async () => {
+  let messages = await client.query(
+    `SELECT * FROM MESSAGES`
+  );
+  let rebump = messages.rows.filter(() => Math.random() > .65);
+  const getRando = () => userJSON[Math.floor(Math.random() * userJSON.length)].username;
+  
+  
+  rebump.forEach(async m => {
+    let username = getRando();
+    
+    await client.query(`INSERT INTO messages (message, username, rebump) VALUES ($1, $2, $3)`, [m.message, username, m.id]);
+  });
+  console.log(`finished inserting ${rebump.length} rebumps into messages`);
+})();
+
 
