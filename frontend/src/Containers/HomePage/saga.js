@@ -17,7 +17,7 @@ import {
 export function* loadUserWorker(action) {
   try {
     const userData = yield call(
-      [Request, Request.loadUser],
+      [Request, Request.loadCurrentUser],
       action.username,
       action.feedOffset
     );

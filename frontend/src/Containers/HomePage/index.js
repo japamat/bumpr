@@ -18,7 +18,7 @@ import { loadUser, loadUserError } from '../HomePage/actions';
 export class HomePage extends Component {
   async componentDidMount() {
     const { username, feedOffset } = this.props;
-    console.log(`in homepage comp: `, this.props);
+    console.log(`in homepage comp: `);
     
     try {
       this.props.onLoadUser(username, feedOffset);
