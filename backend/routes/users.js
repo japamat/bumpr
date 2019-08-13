@@ -30,8 +30,6 @@ router.get("/", async function(req, res, next) {
 
 router.get("/home", authRequired, async function(req, res, next) {
   try {
-    console.log(`in the home route`);
-    
     const user = await User.getFeed(req.username, req.query.offset);
     return res.json({ user });
   } catch (err) {

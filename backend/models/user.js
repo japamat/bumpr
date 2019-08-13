@@ -107,8 +107,6 @@ class User {
   /** Given a username, return data about user. */
 
   static async findOne(username, offset) {
-    console.log(`in user model: ${username}`);
-    
     const userRes = await db.query(
       `SELECT username, bio, image_url, header_image_url, location 
             FROM users 
