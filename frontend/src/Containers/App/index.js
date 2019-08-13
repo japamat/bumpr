@@ -16,6 +16,7 @@ import { createStructuredSelector } from 'reselect';
 
 import { loginPreviousUser } from '../App/actions';
 import HomePage from '../HomePage/Loadable';
+import UserPage from '../UserPage/Loadable';
 import NotFoundPage from '../NotFoundPage/Loadable';
 import Header from '../../Components/Header';
 import Footer from '../../Components/Footer';
@@ -60,6 +61,7 @@ export class App extends Component {
           <Switch>
             <Route exact path="/home" component={HomePage} />
             <Route exact path="/login" component={LoginPage} />
+            <Route exact path="/users/:username" component={UserPage} />
             <Redirect to="/home" />
             <Route path="" component={NotFoundPage} />
           </Switch>

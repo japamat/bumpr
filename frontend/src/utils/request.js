@@ -35,6 +35,11 @@ class Request {
   }
 
   static async loadUser(username, offset) {
+    let res = await this.request(`users/${username}`, { offset });
+    return res.user;
+  }
+
+  static async loadCurrentUser(username, offset) {
     let res = await this.request(`users/home`, { offset });
     return res.user;
   }
