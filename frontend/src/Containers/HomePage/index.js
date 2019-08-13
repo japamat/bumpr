@@ -13,13 +13,21 @@ import { createStructuredSelector } from 'reselect';
 import { makeSelectCurrentUserData, makeSelectHomeFeedOffset } from '../HomePage/selectors';
 import { makeSelectCurrentUser } from '../App/selectors';
 import { loadUser, loadUserError } from '../HomePage/actions';
+import Message from '../Message';
 
 
 export class HomePage extends Component {
+  constructor(props) {
+    super(props)
+  
+    this.state = {
+       feedOffset: 0,
+    }
+  }
+  
   async componentDidMount() {
-    const { username, feedOffset } = this.props;
-    console.log(`in homepage comp: `);
-    
+    const { username } = this.props;
+    const { feedOffset } = this.state;
     try {
       this.props.onLoadUser(username, feedOffset);
     } catch (error) {
@@ -29,7 +37,7 @@ export class HomePage extends Component {
 
   render() {
     const { following, followers, feed } = this.props.currentUserData;
-    
+
     return (
       <div>
         <h1>
@@ -46,11 +54,7 @@ export class HomePage extends Component {
         </h3>
         { this.props.currentUserData ? (
           feed.map(message => (
-            <div>
-              <h5>{message.username}</h5>
-              <div>{message.message}</div>
-              <div><small>{message.timestamp}</small></div>
-            </div>
+            <Message count={50} { ...message } />
           ))
         ) : null }
   
