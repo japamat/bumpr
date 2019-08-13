@@ -26,6 +26,19 @@ router.get("/", async function(req, res, next) {
   }
 });
 
+/** gets the users feed for homepage */
+
+router.get("/home", authRequired, async function(req, res, next) {
+  try {
+    console.log(`got to route users/home`);
+    const user = await User.getFeed(req.username, req.query.offset);
+    console.log(user);
+    return res.json({ user });
+  } catch (err) {
+    return next(err);
+  }
+});
+
 /** GET /[username] => {user: user} */
 
 router.get("/:username", async function(req, res, next) {

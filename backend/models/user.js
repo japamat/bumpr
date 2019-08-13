@@ -86,11 +86,27 @@ class User {
     return result.rows;
   }
 
+  /** get user data for feed/home */
+
+  static async getFeed(username, offset) {
+    let user = await this.findOne(username);
+    let feedRes = await db.query(
+      `SELECT u.username AS username, u.image_url, m.message, m.timestamp
+        FROM messages AS m
+        JOIN follows AS f ON m.username = f.followee
+        JOIN users AS u ON m.username = u.username
+        WHERE f.follower = $1
+        ORDER BY m.timestamp DESC
+        OFFSET $2 LIMIT 50`,
+      [username, offset]
+    );
+    user.feed = feedRes.rows;
+    return user;
+  }
+
   /** Given a username, return data about user. */
 
   static async findOne(username) {
-    console.log('in the user model');
-    
     const userRes = await db.query(
       `SELECT username, bio, image_url, header_image_url, location 
             FROM users 
