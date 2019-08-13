@@ -9,7 +9,8 @@ class Request {
     //   ? parsed._token
     //   : null;
     paramsOrData._token = _token; 
-
+    console.log(paramsOrData);
+    
     try {
       return (await axios({
         method: verb,
@@ -33,8 +34,8 @@ class Request {
     return res.token;
   }
 
-  static async loadUser(username) {
-    let res = await this.request(`users/${username}`);
+  static async loadUser(username, offset) {
+    let res = await this.request(`users/home`, { offset });
     return res.user;
   }
 

@@ -31,8 +31,6 @@ export function* loginUserWorker(action) {
 
 export function* getLoggedInUserWorker(action) {
   try {
-    console.log(`hit the loginsaga worker`);
-    
     const username = yield call([Request, Request.getLoggedInUser], action.token);
     yield put(loginUserSuccess(username));
   } catch (error) {
