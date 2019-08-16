@@ -42,7 +42,7 @@ router.get("/home", authRequired, async function(req, res, next) {
 router.get("/:username", async function(req, res, next) {
   try {
     const user = await User.findOne(req.params.username, req.query.offset);
-    return res.json({ user });
+    return res.status(200).json({ user });
   } catch (err) {
     return next(err);
   }

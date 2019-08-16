@@ -89,17 +89,60 @@ class User {
   /** get user data for feed/home */
 
   static async getFeed(username, offset) {
-    let user = await this.findOne(username);
-    let feedRes = await db.query(
-      `SELECT u.username AS username, u.image_url, m.message, m.timestamp
-        FROM messages AS m
-        JOIN follows AS f ON m.username = f.followee
+    const user = {};
+    const userRes = await db.query(
+      `SELECT bio, location, header_image_url, username, image_url
+        FROM users WHERE username = $1`, [username]
+    );
+
+    user.about = userRes.rows;
+
+    const userFollowing = 
+      `SELECT followee FROM follows WHERE follower = $1`;
+
+    const rebumpsFromFollowing = 
+      `SELECT
+        m.id,
+        m.likes,
+        m.comments,
+        m.rebumps,
+        m.message,
+        m.timestamp,
+        m.username AS op,
+        r.username,
+        r.text,
+        u.image_url
+      FROM messages AS m 
+        JOIN rebump AS r ON r.message_id = m.id
         JOIN users AS u ON m.username = u.username
-        WHERE f.follower = $1
-        ORDER BY m.timestamp DESC
-        OFFSET $2 LIMIT 50`,
+      WHERE r.username IN (${userFollowing})`;
+      
+    const messagesFromFollowing = 
+      `SELECT
+        m.id,
+        m.likes,
+        m.comments,
+        m.rebumps,
+        m.message,
+        m.timestamp,
+        m.username AS op,
+        m.username AS username,
+        r.text,
+        u.image_url
+      FROM messages AS m 
+        JOIN users AS u ON m.username = u.username
+        FULL OUTER JOIN rebump AS r ON r.message_id = m.id
+      WHERE m.username IN (${userFollowing})`;
+
+
+    let feedRes = await db.query(
+      `${rebumpsFromFollowing}
+        UNION 
+        ${messagesFromFollowing}
+        ORDER BY timestamp DESC LIMIT 50 OFFSET $2`,
       [username, offset]
     );
+
     user.feed = feedRes.rows;
     return user;
   }
@@ -121,31 +164,63 @@ class User {
       throw error;
     }
 
+    const messageQuery = 
+      `SELECT
+          m.id,
+          m.likes,
+          m.comments,
+          m.rebumps,
+          m.message,
+          m.timestamp,
+          m.username AS op,
+          m.username AS username,
+          r.text,
+          u.image_url
+        FROM messages AS m
+          JOIN users AS u ON u.username = m.username
+          FULL OUTER JOIN rebump AS r ON r.message_id = m.id
+        WHERE m.username = $1`;
+          
+    const rebumpQuery = 
+      `SELECT
+          m.id,
+          m.likes,
+          m.comments,
+          m.rebumps,
+          m.message,
+          m.timestamp,
+          m.username AS op,
+          r.username AS username,
+          r.text,
+          u.image_url
+          FROM messages AS m
+            JOIN rebump AS r ON m.id = r.message_id
+            JOIN users AS u ON u.username = m.username
+          WHERE r.username = $1`;
+      
+
     const userMessagesRes = await db.query(
-      `SELECT m.id, m.message, u.username, m.timestamp, m.rebump
-           FROM messages AS m
-             JOIN users AS u ON u.username = m.username
-           WHERE m.username = $1
-           LIMIT 50 OFFSET $2`,
+      `${messageQuery}
+          UNION
+        ${rebumpQuery}
+          ORDER BY timestamp LIMIT 50 OFFSET $2`,
       [username, offset]);
-    
+
     const userFollowsRes = await db.query(
-      `SELECT f.followee AS username, u.bio, u.image_url, u.header_image_url, u.location
-           FROM follows AS f
-             JOIN users AS u ON u.username = f.follower
-           WHERE u.username = $1`,
+      `SELECT count(followee)
+        FROM follows     
+        WHERE follower = $1`,
       [username]);
     
     const userFollowersRes = await db.query(
-      `SELECT f.follower AS username, u.bio, u.image_url, u.header_image_url, u.location
-           FROM follows AS f
-             JOIN users AS u ON u.username = f.followee
-           WHERE u.username = $1`,
+      `SELECT count(follower)
+        FROM follows     
+        WHERE followee = $1`,
       [username]);
 
+    user.following = userFollowsRes.rows[0].count;
+    user.followers = userFollowersRes.rows[0].count;
     user.messages = userMessagesRes.rows;
-    user.following = userFollowsRes.rows;
-    user.followers = userFollowersRes.rows;
     return user;
   }
 
