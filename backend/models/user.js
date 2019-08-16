@@ -91,55 +91,48 @@ class User {
   static async getFeed(username, offset) {
     const user = {};
     const userRes = await db.query(
-      `SELECT bio, location, header_image_url, username, image_url
-        FROM users WHERE username = $1`, [username]
+      `SELECT
+          u.bio,
+          u.location,
+          u.header_image_url,
+          u.username,
+          u.image_url,
+          COUNT(DISTINCT flr.followee) as following,
+          COUNT(DISTINCT fle.follower) as followers
+        FROM users AS u
+          JOIN follows AS flr ON flr.follower = u.username
+          JOIN follows AS fle ON fle.followee = u.username
+        WHERE username = $1
+        GROUP BY (u.bio, u.username, u.location, u.image_url)`, [username]
     );
 
-    user.about = userRes.rows;
+    user.about = userRes.rows[0];
 
     const userFollowing = 
       `SELECT followee FROM follows WHERE follower = $1`;
 
-    const rebumpsFromFollowing = 
-      `SELECT
-        m.id,
-        m.likes,
-        m.comments,
-        m.rebumps,
-        m.message,
-        m.timestamp,
-        m.username AS op,
-        r.username,
-        r.text,
-        u.image_url
-      FROM messages AS m 
-        JOIN rebump AS r ON r.message_id = m.id
-        JOIN users AS u ON m.username = u.username
-      WHERE r.username IN (${userFollowing})`;
-      
-    const messagesFromFollowing = 
-      `SELECT
-        m.id,
-        m.likes,
-        m.comments,
-        m.rebumps,
-        m.message,
-        m.timestamp,
-        m.username AS op,
-        m.username AS username,
-        r.text,
-        u.image_url
-      FROM messages AS m 
-        JOIN users AS u ON m.username = u.username
-        FULL OUTER JOIN rebump AS r ON r.message_id = m.id
-      WHERE m.username IN (${userFollowing})`;
-
-
     let feedRes = await db.query(
-      `${rebumpsFromFollowing}
-        UNION 
-        ${messagesFromFollowing}
-        ORDER BY timestamp DESC LIMIT 50 OFFSET $2`,
+      `SELECT
+          m.id,
+          m.timestamp,
+          COUNT(DISTINCT l.username) AS num_likes,
+          COUNT(DISTINCT r.username) AS num_rebumps,
+          COUNT(DISTINCT c.username) AS num_comments,
+          m.rebumps AS num_rebumps,
+          array_agg(DISTINCT l.username) likes,
+          array_agg(DISTINCT ARRAY[r.username, r.text]) rebumps,
+          m.message,
+          m.username,
+          u.image_url
+        FROM messages AS m
+          JOIN users AS u ON u.username = m.username
+          FULL JOIN rebump AS r ON m.id = r.message_id
+          FULL JOIN likes AS l ON l.message_id = m.id
+          JOIN comments AS c ON c.message_id = m.id
+        WHERE m.username IN (${userFollowing})
+          OR r.username IN (${userFollowing})
+        GROUP BY (m.id, u.username) ORDER BY m.timestamp DESC
+        LIMIT 50 OFFSET $2`,
       [username, offset]
     );
 
@@ -173,12 +166,11 @@ class User {
           m.message,
           m.timestamp,
           m.username AS op,
-          m.username AS username,
-          r.text,
+          NULL AS username,
+          NULL AS text,
           u.image_url
         FROM messages AS m
           JOIN users AS u ON u.username = m.username
-          FULL OUTER JOIN rebump AS r ON r.message_id = m.id
         WHERE m.username = $1`;
           
     const rebumpQuery = 
