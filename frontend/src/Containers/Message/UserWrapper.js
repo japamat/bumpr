@@ -5,7 +5,7 @@ const Wrapper = styled.div`
   display: flex;
   padding: 1em;
   justify-content: flex-start;
-  align-items: flex-end;
+  align-items: flex-start;
   position: relative;
 `;
 
