@@ -17,12 +17,6 @@ const makeSelectLoadingUser = () =>
     userPageState => userPageState.loadingUser,
   );
 
-const makeSelectUserMessagesOffset = () =>
-  createSelector(
-    selectUserPage,
-    userPageState => userPageState.messagesOffset,
-  );
-
 const makeSelectErrorUser = () =>
   createSelector(
     selectUserPage,
@@ -33,5 +27,4 @@ export {
   makeSelectUserData,
   makeSelectLoadingUser,
   makeSelectErrorUser,
-  makeSelectUserMessagesOffset,
 };

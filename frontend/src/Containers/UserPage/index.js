@@ -11,27 +11,37 @@ import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 
 import { loadUser, loadUserError } from './actions';
-import { makeSelectUserData, makeSelectUserMessagesOffset } from './selectors';
+import Message from '../Message';
+import { makeSelectUserData } from './selectors';
 import LoadingIndicator from '../../Components/LoadingIndicator';
 
 
 export class UserPage extends Component {
   async componentDidMount() {
     const { messagesOffset } = this.props;
-    const { username } = this.props.match.params;
-
-    
+    const { username } = this.props.match.params;    
     try {
       this.props.onLoadUser(username, messagesOffset);
     } catch (error) {
-      console.log(`shit broke in the userpage comp`);
+      console.log(`things broke in the userpage comp`);
       
+    }
+  }
+
+  async componentDidUpdate(prevProps) {
+    const newUsername = this.props.match.params.username;
+    const oldUsername = this.props.userData.username;
+    if (newUsername !== oldUsername) {
+      try {
+        this.props.onLoadUser(newUsername, 0);
+      } catch (error) {
+        console.log(`things broke in the userpage comp`);
+      }
     }
   }
 
   render() {
     const { following, followers, username, messages } = this.props.userData;
-    console.log(`in user page comp: `, username);
     return (
       <div>
         <h1>{ username || `loading...` }</h1>
@@ -47,10 +57,7 @@ export class UserPage extends Component {
         <div>
         { messages ? (
             messages.map(message => (
-              <div>
-                <div>{message.message}</div>
-                <span>{message.timestamp}</span>
-              </div>
+              <Message count={50} { ...message } />
             ))
           ) : 0 }
         </div>
@@ -60,7 +67,6 @@ export class UserPage extends Component {
   }
 }
 const mapStateToProps = createStructuredSelector({
-  messagesOffset: makeSelectUserMessagesOffset(),
   userData: makeSelectUserData(),
 });
 
