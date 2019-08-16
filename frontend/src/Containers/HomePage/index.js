@@ -36,7 +36,8 @@ export class HomePage extends Component {
   }
 
   render() {
-    const { following, followers, feed } = this.props.currentUserData;
+    const { feed, about } = this.props.currentUserData;
+    console.log(about)
 
     return (
       <div>
@@ -44,17 +45,17 @@ export class HomePage extends Component {
           { this.props.username }
         </h1>
         <h3>
-          FOLLOWING: { following ? following.length : 0 }
+          FOLLOWING: { about ? about.following : 0 }
         </h3>
         <h3>
-          FOLLOWERS: { followers ? followers.length : 0 }
+          FOLLOWERS: { about ? about.followers : 0 }
         </h3>
         <h3>
           FEED
         </h3>
         { this.props.currentUserData ? (
           feed.map(message => (
-            <Message count={50} { ...message } />
+            <Message { ...message } />
           ))
         ) : null }
   
@@ -63,6 +64,7 @@ export class HomePage extends Component {
     );
   }
 }
+
 const mapStateToProps = createStructuredSelector({
   username: makeSelectCurrentUser(),
   feedOffset: makeSelectHomeFeedOffset(),
