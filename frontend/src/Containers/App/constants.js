@@ -10,6 +10,9 @@
  */
 
 export const LOGIN_USER = `frontend/App/LOGIN_USER`;
+export const GET_USER_INFO = `frontend/App/GET_USER_INFO`;
+export const GET_USER_INFO_SUCCESS = `frontend/App/GET_USER_INFO_SUCCESS`;
+export const GET_USER_INFO_ERROR = `frontend/App/GET_USER_INFO_ERROR`;
 export const LOGIN_PREVIOUS_USER = `frontend/App/LOGIN_PREVIOUS_USER`;
 export const LOGIN_USER_SUCCESS = `frontend/App/LOGIN_USER_SUCCESS`;
 export const LOGIN_USER_ERROR = `frontend/App/LOGIN_USER_ERROR`;

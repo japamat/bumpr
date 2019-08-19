@@ -19,8 +19,8 @@ const makeSelectCurrentUser = () =>
 
 const makeSelectUserData = () =>
   createSelector(
-    [makeSelectCurrentUser(), selectGlobal],
-    (username, globalState) => ({ username, userData: globalState.userData }),
+    selectGlobal,
+    globalState => globalState.userData,
   );
 
 export {
