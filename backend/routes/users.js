@@ -26,6 +26,19 @@ router.get("/", async function(req, res, next) {
   }
 });
 
+/**gets data about the user on app load */
+
+router.get("/me", authRequired, async function(req, res, next) {
+  try {
+    const user = await User.findMe(req.username);
+    return res.json({ user });
+  }
+
+  catch (err) {
+    return next(err);
+  }
+});
+
 /** gets the users feed for homepage */
 
 router.get("/home", authRequired, async function(req, res, next) {

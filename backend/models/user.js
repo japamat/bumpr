@@ -35,6 +35,29 @@ class User {
     throw invalidPass;
   }
 
+  /** Get data for the current logged in user */
+
+  static async findMe(username) {
+    const user = {};
+    const userRes = await db.query(
+      `SELECT
+          u.bio,
+          u.location,
+          u.header_image_url,
+          u.username,
+          u.image_url,
+          COUNT(DISTINCT flr.followee) as following,
+          COUNT(DISTINCT fle.follower) as followers
+        FROM users AS u
+          JOIN follows AS flr ON flr.follower = u.username
+          JOIN follows AS fle ON fle.followee = u.username
+        WHERE username = $1
+        GROUP BY (u.bio, u.username, u.location, u.image_url)`, [username]
+    );
+    user.about = userRes.rows[0];
+    return user;
+  }
+
 
   /** Register user with data. Returns new user data. */
 
@@ -90,24 +113,6 @@ class User {
 
   static async getFeed(username, offset) {
     const user = {};
-    const userRes = await db.query(
-      `SELECT
-          u.bio,
-          u.location,
-          u.header_image_url,
-          u.username,
-          u.image_url,
-          COUNT(DISTINCT flr.followee) as following,
-          COUNT(DISTINCT fle.follower) as followers
-        FROM users AS u
-          JOIN follows AS flr ON flr.follower = u.username
-          JOIN follows AS fle ON fle.followee = u.username
-        WHERE username = $1
-        GROUP BY (u.bio, u.username, u.location, u.image_url)`, [username]
-    );
-
-    user.about = userRes.rows[0];
-
     const userFollowing = 
       `SELECT followee FROM follows WHERE follower = $1`;
 
@@ -115,9 +120,10 @@ class User {
       `SELECT
           m.id,
           m.timestamp,
-          COUNT(DISTINCT l.username) AS num_likes,
-          COUNT(DISTINCT r.username) AS num_rebumps,
-          COUNT(DISTINCT c.username) AS num_comments,
+          m.rebumps AS num_rebumps,
+          m.comments AS num_comments,
+          m.likes AS num_likes,
+          BOOL_OR(f.follower = $1) AS direct_follow,
           m.rebumps AS num_rebumps,
           array_agg(DISTINCT l.username) likes,
           array_agg(DISTINCT ARRAY[r.username, r.text]) rebumps,
@@ -128,11 +134,12 @@ class User {
           JOIN users AS u ON u.username = m.username
           FULL JOIN rebump AS r ON m.id = r.message_id
           FULL JOIN likes AS l ON l.message_id = m.id
-          JOIN comments AS c ON c.message_id = m.id
+          FULL JOIN comments AS c ON c.message_id = m.id
+          FULL JOIN follows AS f ON m.username = f.followee
         WHERE m.username IN (${userFollowing})
           OR r.username IN (${userFollowing})
         GROUP BY (m.id, u.username) ORDER BY m.timestamp DESC
-        LIMIT 50 OFFSET $2`,
+        LIMIT 30 OFFSET $2`,
       [username, offset]
     );
 
