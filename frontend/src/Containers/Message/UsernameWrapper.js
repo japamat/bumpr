@@ -2,15 +2,11 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div`
   display: flex;
-  padding: 1em;
   flex-direction: column;
+  padding: 1em;
+  justify-content: flex-start;
   align-items: flex-start;
   position: relative;
-  border-top: 1px solid #6e6e6e;
-
-  &:first-child {
-    border-top: none;
-  }
 `;
 
 export default Wrapper;

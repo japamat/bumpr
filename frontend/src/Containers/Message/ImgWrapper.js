@@ -9,7 +9,7 @@ const Wrapper = styled.div`
   background-image: url("${props => props.image_url}");
   background-position: center;
   background-size: contain;
-  border: 3px solid #000;
+  border: 3px solid ${props => props.theme.borders};
   border-radius: 50%;
 
   &:hover {

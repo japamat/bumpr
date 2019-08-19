@@ -9,7 +9,7 @@ export default styled(Link)`
   outline: 0;
   font-weight: bold;
   font-size: 1.5em;
-  color: #000;
+  color: ${props => props.theme.fontColor};
 
   &:hover {
     color: #41addd;

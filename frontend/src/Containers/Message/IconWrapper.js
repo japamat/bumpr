@@ -17,6 +17,10 @@ const Wrapper = styled.div`
   }
 `;
 
+const IcoSvg = styled.svg`
+  color: ${props => props.theme.iconColor}
+`;
+
 const Spacer = styled.div`
   margin: 1em;
 `;
@@ -38,7 +42,7 @@ class IconWrapper extends Component {
       <Spacer>
         <Wrapper>
           <Icon { ...this.props.iconProps } />
-          <Span>{count}</Span>
+          <Span color={this.props.iconProps.fill} >{count}</Span>
         </Wrapper>
       </Spacer>
     );
