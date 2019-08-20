@@ -9,6 +9,7 @@ import {
   loginUser,
   loginUserSuccess,
   loginUserError,
+  getUserInfoSuccess,
 } from '../App/actions';
 
 /**
@@ -21,7 +22,12 @@ export function* loginUserWorker(action) {
     const token = yield call([Request, Request.loginUser], action.payload);
     setToken(token);
     const username = getUsernameFromToken(token);
-    yield put(loginUserSuccess(username))
+    yield put(loginUserSuccess(username));
+    const userData = yield call(
+      [Request, Request.loadCurrentUser],
+      username,
+    );
+    yield put(getUserInfoSuccess(userData));
     history.push('/home')
   } catch (error) {
     console.log(error);
@@ -33,6 +39,11 @@ export function* getLoggedInUserWorker(action) {
   try {
     const username = yield call([Request, Request.getLoggedInUser], action.token);
     yield put(loginUserSuccess(username));
+    const userData = yield call(
+      [Request, Request.loadCurrentUser],
+      username,
+    );
+    yield put(getUserInfoSuccess(userData));
   } catch (error) {
     console.log('things broke');
     
