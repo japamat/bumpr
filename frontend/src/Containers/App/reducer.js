@@ -14,13 +14,16 @@ import {
   LOGIN_USER_ERROR,
   GET_USER_INFO_SUCCESS
 } from './constants';
+import themes from '../../utils/themes';
+import { TOGGLE_THEME } from '../Sidebar/constants';
 
 // The initial state of the App
 export const initialState = {
   loading: false,
   error: false,
   currentUser: false,
-  userData: 'test this fuckin thing',
+  userData: false,
+  theme: themes.darkTheme,
 };
 
 /* eslint-disable default-case, no-param-reassign */
@@ -38,8 +41,6 @@ const appReducer = (state = initialState, action) =>
         break;
 
       case GET_USER_INFO_SUCCESS:
-        console.log('in app reducer', action);
-        
         draft.loading = false;
         draft.userData = action.userData.about;
         break;
@@ -47,6 +48,12 @@ const appReducer = (state = initialState, action) =>
       case LOGIN_USER_ERROR:
         draft.error = action.error;
         draft.loading = false;
+        break;
+
+      case TOGGLE_THEME:
+        draft.theme = state.theme === themes.darkTheme
+          ? themes.lightTheme
+          : themes.darkTheme;
         break;
     }
   });

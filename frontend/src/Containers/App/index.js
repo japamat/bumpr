@@ -16,66 +16,59 @@ import { createStructuredSelector } from 'reselect';
 
 import { loginPreviousUser, getUserInfo } from '../App/actions';
 import HomePage from '../HomePage/Loadable';
+import Sidebar from '../Sidebar';
 import UserPage from '../UserPage/Loadable';
 import NotFoundPage from '../NotFoundPage/Loadable';
-import Header from '../../Components/Header';
 import Footer from '../../Components/Footer';
+import { checkMobile } from '../../utils/mobile';
 
-import GlobalStyle from '../../global-styles';
 import LoginPage from '../LoginPage';
-import history from '../../utils/history';
 import { compose } from 'redux';
-import { makeSelectUserData, makeSelectCurrentUser } from './selectors';
-import themes from '../../utils/themes';
+import {
+  makeSelectUserData,
+  makeSelectCurrentUser,
+  makeSelectAppTheme
+} from './selectors';
 
-const AppWrapper = styled.div`
+const ContentWrapper = styled.div`
   max-width: calc(598px + 16px * 2);
-  margin: 0 auto;
+  margin-left: ${!checkMobile() ? '88px' : 'auto'}
+  margin-top: ${checkMobile() ? '115px' : 'auto'}
+  width: ${checkMobile() ? `100%` : 'auto'};
   display: flex;
-  min-height: 100%;
-  padding: 0 16px;
   flex-direction: column;
+  min-height: 100%;
 `;
 
 const BodyWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   background-color: ${props => (props.theme ? props.theme.bgColor : '#fff')};
   color: ${props => (props.theme ? props.theme.fontColor : '#000')};
-  width: 100%;
   min-height: 100vh;
-`;
+  `;
+  
 
-const SidebarWrapper = styled.div`
-  
-`;
 
-export class App extends Component {
-  constructor(props) {
-    super(props)
-  
-    this.state = {
-       theme: themes.darkTheme,
-    }
-  }
-  
+export class App extends Component {  
   componentDidMount() {
     this.props.onLoginUser();
   }
 
   componentDidUpdate(prevProps) {
-    console.log(`props: `, this.props);
-    console.log(`prevProps: `, prevProps);
     if (this.props.username !== prevProps.username) {
       this.props.getCurrentUserData(this.props.username);
     }
   }
 
   render() {
-    const { theme } = this.state;
+    const { theme } = this.props;
     return (
       <ThemeProvider theme={theme}>
         <BodyWrapper>
-          <Header />
-          <AppWrapper>
+          <Sidebar />
+          <ContentWrapper>
               <meta
                 name="bumpr - give things a bump"
                 content="A project by Jason Matthias"
@@ -88,7 +81,7 @@ export class App extends Component {
               <Route path="" component={NotFoundPage} />
             </Switch>
             <Footer />
-          </AppWrapper>
+          </ContentWrapper>
         </BodyWrapper>
       </ThemeProvider>
     );
@@ -98,6 +91,7 @@ export class App extends Component {
 const mapStateToProps = createStructuredSelector({
   username: makeSelectCurrentUser(),
   userData: makeSelectUserData(),
+  theme: makeSelectAppTheme(),
 });
 
 export const mapDispatchToProps = dispatch => {
