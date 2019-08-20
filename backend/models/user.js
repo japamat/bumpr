@@ -164,46 +164,31 @@ class User {
       throw error;
     }
 
-    const messageQuery = 
+    const userMessagesRes = await db.query(
       `SELECT
           m.id,
-          m.likes,
-          m.comments,
-          m.rebumps,
-          m.message,
           m.timestamp,
-          m.username AS op,
-          NULL AS username,
-          NULL AS text,
+          m.rebumps AS num_rebumps,
+          m.comments AS num_comments,
+          m.likes AS num_likes,
+          BOOL_OR(f.follower = $1) AS direct_follow,
+          m.rebumps AS num_rebumps,
+          array_agg(DISTINCT l.username) likes,
+          array_agg(DISTINCT ARRAY[r.username, r.text]) rebumps,
+          m.message,
+          m.username,
           u.image_url
         FROM messages AS m
           JOIN users AS u ON u.username = m.username
-        WHERE m.username = $1`;
-          
-    const rebumpQuery = 
-      `SELECT
-          m.id,
-          m.likes,
-          m.comments,
-          m.rebumps,
-          m.message,
-          m.timestamp,
-          m.username AS op,
-          r.username AS username,
-          r.text,
-          u.image_url
-          FROM messages AS m
-            JOIN rebump AS r ON m.id = r.message_id
-            JOIN users AS u ON u.username = m.username
-          WHERE r.username = $1`;
-      
-
-    const userMessagesRes = await db.query(
-      `${messageQuery}
-          UNION
-        ${rebumpQuery}
-          ORDER BY timestamp LIMIT 50 OFFSET $2`,
-      [username, offset]);
+          FULL JOIN rebump AS r ON m.id = r.message_id
+          FULL JOIN likes AS l ON l.message_id = m.id
+          FULL JOIN comments AS c ON c.message_id = m.id
+          FULL JOIN follows AS f ON m.username = f.followee
+        WHERE m.username = $1 OR r.username =$1
+        GROUP BY (m.id, u.username) ORDER BY m.timestamp DESC
+        LIMIT 30 OFFSET $2`,
+      [username, offset]
+    );
 
     const userFollowsRes = await db.query(
       `SELECT count(followee)
