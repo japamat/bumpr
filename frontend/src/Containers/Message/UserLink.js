@@ -12,6 +12,6 @@ export default styled(Link)`
   color: ${props => props.theme.fontColor};
 
   &:hover {
-    color: #41addd;
+    color: ${props => props.theme.highlight};
   }
 `;

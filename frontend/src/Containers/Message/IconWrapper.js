@@ -17,10 +17,6 @@ const Wrapper = styled.div`
   }
 `;
 
-const IcoSvg = styled.svg`
-  color: ${props => props.theme.iconColor}
-`;
-
 const Spacer = styled.div`
   margin: 1em;
 `;

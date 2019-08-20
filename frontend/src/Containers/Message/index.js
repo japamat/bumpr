@@ -69,7 +69,7 @@ class Message extends Component {
       ) : (
         <div>
           <Span color="#6e6e6e" fontSize="0.85em" >
-            { !direct_follow ? `${rebumps[0][0]} rebumped` : null }
+            { !direct_follow && rebumps[0][0] ? `${rebumps[0][0]} rebumped` : null }
           </Span>
           <UserWrapper>
             <ImgWrapper username={username} image_url={image_url}/>

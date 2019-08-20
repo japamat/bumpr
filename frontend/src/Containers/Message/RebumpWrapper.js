@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   position: relative;
-  border: 1px solid #6e6e6e;
+  border: 1px solid ${props => (props.theme.borders)};
   border-radius: 15px;
 `;
 
