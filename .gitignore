@@ -14,6 +14,9 @@
 /backend/build
 /frontend/build
 
+# seed data
+/backend/seedData/
+
 # misc
 /backend/.DS_Store
 /backend/.env.local
