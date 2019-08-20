@@ -10,10 +10,14 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 
-import { makeSelectCurrentUserData, makeSelectHomeFeedOffset } from '../HomePage/selectors';
+import {
+  makeSelectHomeFeedOffset,
+  makeSelectCurrentUserFeed,
+  makeSelectHomeLoading,
+} from '../HomePage/selectors';
 import { makeSelectCurrentUser } from '../App/selectors';
-import { loadUser, loadUserError } from '../HomePage/actions';
-import Message from '../Message';
+import { loadUserError, loadUserFeed } from '../HomePage/actions';
+import MessageList from '../../Components/MessageList';
 
 
 export class HomePage extends Component {
@@ -25,42 +29,26 @@ export class HomePage extends Component {
     }
   }
   
-  async componentDidMount() {
+  componentDidMount() {
     const { username } = this.props;
     const { feedOffset } = this.state;
     try {
-      this.props.onLoadUser(username, feedOffset);
+      this.props.onLoadUserFeed(username, feedOffset);
     } catch (error) {
 
     }
   }
 
   render() {
-    const { feed, about } = this.props.currentUserData;
-    console.log(about)
-
+    const { feed, loading, error } = this.props;
+    console.log(this.props);
     return (
       <div>
-        <h1>
-          { this.props.username }
-        </h1>
         <h3>
-          FOLLOWING: { about ? about.following : 0 }
+          HOME
         </h3>
-        <h3>
-          FOLLOWERS: { about ? about.followers : 0 }
-        </h3>
-        <h3>
-          FEED
-        </h3>
-        { this.props.currentUserData ? (
-          feed.map(message => (
-            <Message { ...message } />
-          ))
-        ) : null }
-  
+        <MessageList messages={feed} loading={loading} />
       </div>
-  
     );
   }
 }
@@ -68,12 +56,13 @@ export class HomePage extends Component {
 const mapStateToProps = createStructuredSelector({
   username: makeSelectCurrentUser(),
   feedOffset: makeSelectHomeFeedOffset(),
-  currentUserData: makeSelectCurrentUserData(),
+  feed: makeSelectCurrentUserFeed(),
+  loading: makeSelectHomeLoading(),
 });
 
 export function mapDispatchToProps(dispatch) {
   return {
-    onLoadUser: (username, feedOffset) => dispatch(loadUser(username, feedOffset)),
+    onLoadUserFeed: (username, feedOffset) => dispatch(loadUserFeed(username, feedOffset)),
     onLoadError: error => dispatch(loadUserError(error)),
   };
 }

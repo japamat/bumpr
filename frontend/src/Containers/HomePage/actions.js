@@ -1,21 +1,21 @@
-import { LOAD_USER, LOAD_USER_SUCCESS, LOAD_USER_ERROR, LOAD_USER_FOLLOWING, LOAD_USER_FOLLOWING_SUCCESS } from './constants';
+import {
+  LOAD_USER_FEED,
+  LOAD_USER_FEED_SUCCESS,
+  LOAD_USER_FEED_ERROR,
+} from './constants';
 
-export const loadUser = (username, feedOffset) => {
-  console.log(`in homepage action: `, username);
-  
-  return ({
-    type: LOAD_USER,
+export const loadUserFeed = (username, feedOffset) => ({
+    type: LOAD_USER_FEED,
     username,
     feedOffset,
-  })
-};
+  });
 
-export const loadUserSuccess = userData => ({
-  type: LOAD_USER_SUCCESS,
-  userData,
+export const loadUserSuccess = feed => ({
+  type: LOAD_USER_FEED_SUCCESS,
+  feed,
 });
 
 export const loadUserError = error => ({
-  type: LOAD_USER_ERROR,
+  type: LOAD_USER_FEED_ERROR,
   error,
 });

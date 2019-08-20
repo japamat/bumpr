@@ -4,17 +4,16 @@ import { initialState } from './reducer';
 
 const selectHome = state => state.home || initialState;
 
-const makeSelectCurrentUserData = () =>
+const makeSelectCurrentUserFeed = () =>
   createSelector(
     selectHome,
-    homeState => homeState.userData,
+    homeState => homeState.feed,
   );
 
-
-const makeSelectHomeLoadingUser = () =>
+const makeSelectHomeLoading = () =>
   createSelector(
     selectHome,
-    homeState => homeState.loadingUser,
+    homeState => homeState.loading,
   );
 
 const makeSelectHomeFeedOffset = () =>
@@ -30,8 +29,8 @@ const makeSelectHomeErrorUser = () =>
   );
 
 export {
-  makeSelectCurrentUserData,
-  makeSelectHomeLoadingUser,
+  makeSelectCurrentUserFeed,
+  makeSelectHomeLoading,
   makeSelectHomeErrorUser,
   makeSelectHomeFeedOffset,
 };
