@@ -6,15 +6,11 @@ import {
   LOAD_USER_FOLLOWING_SUCCESS
 } from './constants';
 
-export const loadUser = (username, messagesOffset) => {
-  console.log(`in userpage action: `, LOAD_USER);
-  
-  return ({
-    type: LOAD_USER,
-    username,
-    messagesOffset,
-  })
-};
+export const loadUser = (username, messagesOffset) => ({
+  type: LOAD_USER,
+  username,
+  messagesOffset,
+});
 
 export const loadUserSuccess = userData => ({
   type: LOAD_USER_SUCCESS,

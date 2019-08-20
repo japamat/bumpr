@@ -16,8 +16,6 @@ import {
 
 export function* loadUserWorker(action) {
   try {
-    console.log(`in userpage saga: `, action);
-    
     const userData = yield call(
       [Request, Request.loadUser],
       action.username,

@@ -12,12 +12,13 @@ import { createStructuredSelector } from 'reselect';
 
 import { loadUser, loadUserError } from './actions';
 import Message from '../Message';
-import { makeSelectUserData } from './selectors';
+import { makeSelectUserData, makeSelectLoadingUser } from './selectors';
+import MessageList from '../../Components/MessageList';
 import LoadingIndicator from '../../Components/LoadingIndicator';
 
 
 export class UserPage extends Component {
-  async componentDidMount() {
+  componentDidMount() {
     const { messagesOffset } = this.props;
     const { username } = this.props.match.params;    
     try {
@@ -28,7 +29,7 @@ export class UserPage extends Component {
     }
   }
 
-  async componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
     const newUsername = this.props.match.params.username;
     const oldUsername = this.props.userData.username;
     if (newUsername !== oldUsername) {
@@ -41,7 +42,9 @@ export class UserPage extends Component {
   }
 
   render() {
+    console.log(this.props)
     const { following, followers, username, messages } = this.props.userData;
+    const { loading } = this.props;
     return (
       <div>
         <h1>{ username || `loading...` }</h1>
@@ -55,11 +58,7 @@ export class UserPage extends Component {
           MESSAGES
         </h3>
         <div>
-        { messages ? (
-            messages.map(message => (
-              <Message count={50} { ...message } />
-            ))
-          ) : 0 }
+          <MessageList messages={messages} loading={loading} />
         </div>
       </div>
   
@@ -68,6 +67,7 @@ export class UserPage extends Component {
 }
 const mapStateToProps = createStructuredSelector({
   userData: makeSelectUserData(),
+  loading: makeSelectLoadingUser(),
 });
 
 export function mapDispatchToProps(dispatch) {

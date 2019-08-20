@@ -7,7 +7,7 @@ import {
 
 // The initial state of the App
 export const initialState = {
-  loadingUser: false,
+  loadingUser: true,
   errorUser: false,
   userData: false,
 };
