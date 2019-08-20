@@ -12,6 +12,8 @@ import Comment from "./Comment";
 import Likes from "./Likes";
 import Liked from "./Liked";
 import Rebump from "./Rebump";
+import Home from "./Home";
+import Hot from "./Hot";
 
 const Icon = props => {
   switch (props.name) {
@@ -50,6 +52,12 @@ const Icon = props => {
 
     case "rebump":
       return <Rebump {...props} />;
+
+    case "home":
+      return <Home {...props} />;
+
+    case "hot":
+      return <Hot {...props} />;
 
     default:
       return;
